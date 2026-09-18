@@ -1,18 +1,9 @@
-// clima.js
-// Acá vive el corazón de la app: pedir los datos a Open-Meteo y volcarlos en el HTML.
-// Se apoya en Utilidades (formatos) y en Ubicacion (saber dónde estamos).
 
-// Unidad de temperatura elegida por el usuario. Arranca en Celsius porque es lo más
-// común, pero se puede cambiar desde el botón del pie de la tarjeta principal.
 let unidadElegida = 'c';
 
-// Guardamos la última respuesta completa de Open-Meteo para no tener que volver
-// a pedirla cuando el usuario solo quiere cambiar de °C a °F.
 let ultimosDatosDelClima = null;
 let ultimoNombreDeLugar = '';
 
-// Diccionario de los códigos WMO que devuelve Open-Meteo. No están todos los que
-// existen en el estándar, pero sí todos los que Open-Meteo realmente usa.
 const CODIGOS_DE_CLIMA = {
   0: { tipo: 'despejado', texto: 'Despejado' },
   1: { tipo: 'despejado', texto: 'Mayormente despejado' },
@@ -44,8 +35,6 @@ const CODIGOS_DE_CLIMA = {
   99: { tipo: 'tormenta', texto: 'Tormenta con granizo intenso' },
 };
 
-// Un ícono por tipo de clima, más la variante de noche para el cielo despejado.
-// Los símbolos SVG están definidos una sola vez en index.html.
 function obtenerIcono(codigoClima, esDeDia) {
   const info = CODIGOS_DE_CLIMA[codigoClima] || { tipo: 'nublado', texto: 'Sin datos' };
 
@@ -64,8 +53,7 @@ function obtenerIcono(codigoClima, esDeDia) {
   return { id: idsPorTipo[info.tipo] || 'icono-nube', texto: info.texto };
 }
 
-// El degradado de fondo cambia según el clima. Esto es lo que le da el aire
-// "estilo Samsung" a la tarjeta principal: cada estado del cielo tiene su paleta.
+
 function obtenerClaseDeTema(codigoClima, esDeDia) {
   const info = CODIGOS_DE_CLIMA[codigoClima] || { tipo: 'nublado' };
 
@@ -85,9 +73,7 @@ function obtenerClaseDeTema(codigoClima, esDeDia) {
 async function obtenerClimaActual(latitud, longitud, nombreLugar) {
   mostrarMensajeDeEstado('Consultando el clima…');
 
-  // Pedimos todo en una sola llamada: clima actual, próximas horas y próximos días.
-  // Menos llamadas a la red significa una app que carga más rápido y con menos
-  // puntos donde algo pueda fallar.
+  
   const parametros = new URLSearchParams({
     latitude: latitud,
     longitude: longitud,
@@ -112,8 +98,7 @@ async function obtenerClimaActual(latitud, longitud, nombreLugar) {
 
     pintarTodaLaInterfaz(datos, nombreLugar);
   } catch (error) {
-    // Un fallo de red o de la API no debería mostrarle un stack trace a nadie:
-    // le damos la chance de reintentar con un solo click.
+  
     mostrarMensajeDeEstado(
       'No pudimos obtener el clima para esta ubicación. ' +
       '<button class="boton-reintentar" id="boton-reintentar">Reintentar</button>'
@@ -140,8 +125,7 @@ function pintarTarjetaPrincipal(datos, nombreLugar) {
   const icono = obtenerIcono(actual.weather_code, esDeDia);
   const claseDeTema = obtenerClaseDeTema(actual.weather_code, esDeDia);
 
-  // Sacamos cualquier otra clase "tema-*" antes de poner la nueva, porque si no
-  // se van acumulando en el classList cada vez que cambia el clima.
+  
   const tarjeta = document.getElementById('tarjeta-principal');
   tarjeta.className = 'tarjeta-principal ' + claseDeTema;
 
@@ -160,8 +144,6 @@ function pintarTarjetaPrincipal(datos, nombreLugar) {
   document.getElementById('linea-secundaria').innerHTML =
     `Sensación térmica ${sensacion}° · Máx ${maxima}° / Mín ${minima}°`;
 
-  // La tarjeta arranca invisible en el HTML/CSS y acá le agregamos la clase que
-  // dispara la transición, para que los datos no aparezcan de golpe.
   requestAnimationFrame(() => tarjeta.classList.add('lista'));
 
   actualizarBotonDeUnidad();
@@ -174,8 +156,7 @@ function pintarPronosticoPorHoras(datos) {
   const horas = datos.hourly.time;
   const ahora = new Date();
 
-  // Buscamos desde qué índice del arreglo empieza "ahora", para no mostrar
-  // horas que ya pasaron.
+  
   let indiceDeInicio = 0;
   for (let i = 0; i < horas.length; i++) {
     if (new Date(horas[i]) >= ahora) {
@@ -237,8 +218,7 @@ function pintarPronosticoPorDias(datos) {
 function pintarDetallesAdicionales(datos) {
   const actual = datos.current;
 
-  // La visibilidad viene en el arreglo por hora, no en "current", así que
-  // buscamos el valor de la hora más cercana a ahora mismo.
+  
   const horas = datos.hourly.time;
   const ahora = new Date();
   let indiceDeLaHoraActual = 0;
@@ -279,9 +259,7 @@ function actualizarBotonDeUnidad() {
 
 function alternarUnidadDeTemperatura() {
   unidadElegida = unidadElegida === 'c' ? 'f' : 'c';
-
-  // No hace falta pedir los datos de nuevo, ya los tenemos guardados:
-  // solo hay que volver a pintar con la unidad nueva.
+  
   if (ultimosDatosDelClima) {
     pintarTodaLaInterfaz(ultimosDatosDelClima, ultimoNombreDeLugar);
   }
@@ -297,7 +275,7 @@ function limpiarMensajeDeEstado() {
   document.getElementById('mensaje-de-estado').innerHTML = '';
 }
 
-// --- Arranque de la app y conexión con la ubicación ---
+// --- arranque de la app y conexin con la ubicación ---
 
 function iniciarBusquedaDeUbicacion() {
   mostrarMensajeDeEstado('Ubicando…');
@@ -308,8 +286,7 @@ function iniciarBusquedaDeUbicacion() {
       obtenerClimaActual(coordenadas.latitud, coordenadas.longitud, lugar);
     },
     async () => {
-      // Si el usuario niega el permiso o el GPS falla, intentamos con su IP
-      // antes de rendirnos y pedirle que escriba la ciudad a mano.
+      
       mostrarMensajeDeEstado('No pudimos usar el GPS. Buscando tu zona aproximada…');
 
       try {
