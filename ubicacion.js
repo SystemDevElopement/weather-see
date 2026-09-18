@@ -1,14 +1,6 @@
-// ubicacion.js
-// Todo lo relacionado a "dónde está el usuario" vive acá, separado de la lógica del clima.
-// Hay tres niveles, de más preciso a más básico:
-//   1. GPS del navegador (con permiso del usuario)
-//   2. Ubicación aproximada por IP (si el usuario no da permiso o falla el GPS)
-//   3. Que el propio usuario escriba su ciudad (si los dos anteriores fallan)
 
 const Ubicacion = {
 
-  // Intenta el GPS del navegador primero. Si el usuario lo rechaza o el navegador
-  // no lo soporta, avisamos con onError para que quien nos llama decida el siguiente paso.
   obtenerPorGPS(onExito, onError) {
     if (!navigator.geolocation) {
       onError('El navegador no soporta geolocalización');
@@ -23,8 +15,7 @@ const Ubicacion = {
         });
       },
       (error) => {
-        // No nos importa el detalle técnico del error (permiso denegado, timeout, etc.),
-        // para el usuario todos terminan en lo mismo: probar con la IP.
+        
         onError(error.message);
       },
       {
@@ -75,13 +66,12 @@ const Ubicacion = {
 
       return 'Tu ubicación';
     } catch (error) {
-      // Si esto falla no es grave, el clima igual se puede mostrar sin el nombre exacto.
+  
       return 'Tu ubicación';
     }
   },
 
-  // Búsqueda manual de ciudad para cuando el usuario escribe algo en el buscador,
-  // o cuando ninguno de los métodos automáticos funcionó.
+
   async buscarCiudad(consulta) {
     const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(consulta)}&count=5&language=es&format=json`;
     const respuesta = await fetch(url);
