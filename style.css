@@ -1,0 +1,392 @@
+
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #1c1c1e;
+  background: #eef1f4;
+  transition: background 700ms ease;
+}
+
+button, input {
+  font-family: inherit;
+}
+
+.contenedor {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 18px 16px 48px;
+}
+
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.titulo-app {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.buscador {
+  position: relative;
+  flex: 1 1 auto;
+  max-width: 260px;
+}
+
+.buscador-fila {
+  display: flex;
+  gap: 6px;
+}
+
+#campo-busqueda {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border: none;
+  border-radius: 14px;
+  background: #ffffff;
+  font-size: 14px;
+  color: #1c1c1e;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+#campo-busqueda::placeholder {
+  color: #9a9aa0;
+}
+
+.boton-icono {
+  border: none;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #4a4a4f;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.boton-icono:hover {
+  color: #0a84ff;
+}
+
+.lista-sugerencias {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  overflow: hidden;
+  z-index: 30;
+  display: none;
+}
+
+.lista-sugerencias.abierta {
+  display: block;
+}
+
+.sugerencia {
+  display: block;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: none;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  color: #1c1c1e;
+  cursor: pointer;
+}
+
+.sugerencia:hover {
+  background: #f2f2f5;
+}
+
+.sugerencia-vacia {
+  padding: 10px 14px;
+  font-size: 13px;
+  color: #9a9aa0;
+}
+
+/* ---------- mensajes de estado / error ---------- */
+
+.mensaje-de-estado {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 22px 18px;
+  font-size: 14px;
+  color: #56565c;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.boton-reintentar {
+  border: none;
+  background: none;
+  color: #0a84ff;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+}
+
+/* ---------- principal ---------- */
+
+.tarjeta-principal {
+  border-radius: 28px;
+  padding: 28px 26px 22px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, #56ccf2, #2f80ed);
+  box-shadow: 0 16px 32px rgba(30, 60, 110, 0.25);
+  transition: background 700ms ease;
+  
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.tarjeta-principal.lista {
+  opacity: 1;
+  transform: none;
+  transition: opacity 500ms ease, transform 500ms ease, background 700ms ease;
+}
+
+.texto-lugar {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  opacity: 0.92;
+}
+
+.fila-temperatura {
+  margin: 6px 0 2px;
+}
+
+.temperatura-actual {
+  font-size: 76px;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.estado-del-cielo {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.linea-secundaria {
+  margin: 10px 0 0;
+  font-size: 13.5px;
+  opacity: 0.85;
+}
+
+.boton-unidad {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boton-unidad:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.tema-despejado-dia   { background: linear-gradient(160deg, #56ccf2, #2f80ed); }
+.tema-despejado-noche { background: linear-gradient(160deg, #0f2027, #203a43, #2c5364); }
+.tema-nublado         { background: linear-gradient(160deg, #8e9eab, #5f7180); }
+.tema-niebla          { background: linear-gradient(160deg, #bdc3c7, #8f9a9e); }
+.tema-lluvia          { background: linear-gradient(160deg, #37474f, #4a6572); }
+.tema-nieve           { background: linear-gradient(160deg, #83a4d4, #7391b8); }
+.tema-tormenta        { background: linear-gradient(160deg, #232526, #1c1c2b); }
+
+
+.seccion {
+  margin-top: 20px;
+}
+
+.titulo-seccion {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #56565c;
+  margin: 0 0 10px 4px;
+}
+
+.lista-horas {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 2px 8px;
+  scroll-snap-type: x proximity;
+}
+
+.chip-hora {
+  flex: 0 0 auto;
+  width: 62px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 12px 4px 10px;
+  scroll-snap-align: start;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.chip-hora-etiqueta {
+  font-size: 12px;
+  color: #7a7a80;
+}
+
+.chip-hora-temperatura {
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.chip-hora-lluvia {
+  font-size: 11px;
+  color: #0a84ff;
+  min-height: 14px;
+}
+
+.lista-dias {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.tarjeta-dia {
+  display: grid;
+  grid-template-columns: 84px 26px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid #f0f0f2;
+  font-size: 14px;
+}
+
+.tarjeta-dia:last-child {
+  border-bottom: none;
+}
+
+.dia-nombre {
+  font-weight: 500;
+}
+
+.dia-lluvia {
+  font-size: 12px;
+  color: #0a84ff;
+  text-align: right;
+}
+
+.dia-temperaturas {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  font-variant-numeric: tabular-nums;
+}
+
+.dia-minima {
+  color: #9a9aa0;
+}
+
+.grilla-detalles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.tarjeta-detalle {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  color: #6a6a70;
+}
+
+.detalle-etiqueta {
+  font-size: 12.5px;
+}
+
+.detalle-valor {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1c1c1e;
+}
+
+.icono {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* ---------- pie de página ---------- */
+
+.pie {
+  margin-top: 26px;
+  font-size: 12px;
+  color: #9a9aa0;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.pie a {
+  color: #7a7a80;
+}
+
+@media (max-width: 380px) {
+  .temperatura-actual {
+    font-size: 64px;
+  }
+
+  .tarjeta-dia {
+    grid-template-columns: 68px 22px 1fr auto;
+    gap: 8px;
+    font-size: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
